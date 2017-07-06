@@ -14,9 +14,9 @@ existing = raw_input(question)
 
 #FUNCTION TO ADD STATUS
 def add_status():
-
+    
     updated_status_message = None
-
+    
     if spy.current_status_message != None:
 
         print 'Your current status message is %s \n' % (spy.current_status_message)
@@ -43,8 +43,8 @@ def add_status():
             item_position = item_position + 1
 
         message_selection = int(raw_input("\nChoose from the above messages "))
-
-
+        
+        
         if len(STATUS_MESSAGES) >= message_selection:
             updated_status_message = STATUS_MESSAGES[message_selection - 1]
 
@@ -58,11 +58,11 @@ def add_status():
 
     return updated_status_message
 
-
+#function to add friend doesn't work incase if the number of friends are already 3
 def add_friend():
 
     new_friend = Spy('','',0,0.0)
-
+    #input details of new spy friend
     new_friend.name = raw_input("Please add your friend's name: ")
     new_friend.salutation = raw_input("Are they Mr. or Ms.?: ")
 
@@ -73,7 +73,7 @@ def add_friend():
 
     new_friend.rating = raw_input("Spy rating?")
     new_friend.rating = float(new_friend.rating)
-
+    #checking if spy name,age and rating are according to our requirments or not
     if len(new_friend.name) > 0 and new_friend.age > 12 and new_friend.rating >= spy.rating:
         friends.append(new_friend)
         print 'Friend Added!'
@@ -82,7 +82,7 @@ def add_friend():
 
     return len(friends)
 
-
+#function for selection of friend
 def select_a_friend():
     item_number = 0
 
@@ -98,36 +98,38 @@ def select_a_friend():
 
     return friend_choice_position
 
-
+#function to send encrypt the message inside image and update the chat
 def send_message():
-
+    #selecting friend
     friend_choice = select_a_friend()
-
+    #input path of image used for storing message
     original_image = raw_input("What is the name of the image?")
+    #Path of image in which message will be hidden
     output_path = "C:\Users\New\PycharmProjects\spy_chat\Secret\output1.png"
+    
     text = raw_input("What do you want to say? ")
+    #encoding the message
     Steganography.encode(original_image, output_path, text)
-
+    #if message contain text store it in variable new_chat and append 
     new_chat = ChatMessage(text,True)
 
     friends[friend_choice].chats.append(new_chat)
 
     print "Your secret message image is ready!"
 
-
+# Function to Decrypt the message and if statisifying condition store the chats
 def read_a_message():
-
+    #selecting friend
     sender = select_a_friend()
-
+    #input path of image where encoded message is stored
     output_path = raw_input("What is the name of the file?")
-
+    #decoding message and storing
     secret_text = Steganography.decode(output_path)
 
-
-
+    #chcking if image contains some image and it is not more than 100 in words
     if len(secret_text) > 0 and len(secret_text) <=100:
 
-
+        #Searching if special words like 'SOS','SAVEME'are found in the message
         if re.search(r'SOS', secret_text):
             print "Something Special"
         elif re.search(r'SAVEME', secret_text):
@@ -139,9 +141,11 @@ def read_a_message():
         else:
             print "Message readed"
         print secret_text
+        #if image contains message then store in  the chat
         new_chat = ChatMessage(secret_text, False)
         friends[sender].chats.append(new_chat)
         print "Your secret message has been saved!"
+    #delete spy if message is more than 100 words
     elif len(secret_text) >100:
         del friends[sender]
         print "Deleting spy!!!Speaks too much!!!"
@@ -151,7 +155,7 @@ def read_a_message():
         print "Nothing to read in image"
 #function to read chat history
 def read_chat():
-    #friend selection
+    #selecting friend with whom you want to see the chat history
     read_for = select_a_friend()
 
     print '\n6'
@@ -173,7 +177,7 @@ def start_chat(spy):
 
     spy.name = spy.salutation + " " + spy.name
 
-
+    #Checcking if spy statisfies the given age condition
     if spy.age > 12 and spy.age < 50:
 
 
@@ -181,7 +185,7 @@ def start_chat(spy):
               + str(spy.age) + " and rating of: " + str(spy.rating) + " Proud to have you onboard"
 
         show_menu = True
-
+        #Menu option for spy continue till correct choice is entered
         while show_menu:
             menu_choices = "What do you want to do? \n 1. Add a status update \n 2. Add a friend \n 3. Send a secret message \n 4. Read a secret message \n 5. Read Chats from a user \n 6. Close Application \n"
             menu_choice = raw_input(menu_choices)
@@ -202,6 +206,7 @@ def start_chat(spy):
                     read_chat()
                 else:
                     show_menu = False
+   #when spy age is invalid                 
     else:
         print 'Sorry you are not of the correct age to be a spy'
 
